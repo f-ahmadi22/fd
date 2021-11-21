@@ -1,0 +1,18 @@
+class MessageForwarder
+{
+    private Message createForwardMessage(Session session,Message message)
+      throws MessagingException, IOException {
+      
+        MimeMessage forward = new MimeMessage (session);
+        forward.setFrom (getFromAddress (message));
+        forward.setReplyTo ( new Address [] { new InternetAddress (listAddress) });
+        forward.addRecipients (Message.RecipientType.TO,listAddress);
+        forward.addRecipients (Message.RecipientType.BCC,getMailListAddresses ());
+        forward.setSubject (transformedSubject (message.getSubject ()));
+        forward.setSentDate (message.getSentDate ());
+        forward.addHeader (LOOP_HEADER, listAddress);
+        buildForwardContent(message, forward);
+        return forward;
+    }
+    ...
+}
