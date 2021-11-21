@@ -1,0 +1,35 @@
+public class Scheduler
+{
+    private List items;
+    public void updateScheduleItem(ScheduleItem item)
+      throws SchedulingException {
+        try {
+          validate(item);
+        }
+        catch (ConflictException e) {
+          throw new SchedulingException(e);
+        }
+        ...
+      }
+    private void validate(ScheduleItem item)
+      throws ConflictException {
+        // make calls to a database
+        ...
+      }
+    public int getDeadtime() {
+      int result = 0;
+      for (Iterator it = items.iterator(); it.hasNext(); ) {
+        ScheduleItem item = (ScheduleItem)it.next();
+        if (item.getType() != ScheduleItem.TRANSIENT && notShared(item)) {
+          result += item.getSetupTime() + clockTime();
+        }
+        if (item.getType() != ScheduleItem.TRANSIENT) {
+          result += item.finishingTime();
+        }
+        else {
+          result += getStandardFinish(item);
+        }
+      }
+     return result;
+    }
+}
